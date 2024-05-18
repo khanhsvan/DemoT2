@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Đăng Nhập";
+}
+
+<h2>Đăng Nhập</h2>
+
+@using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
+{
+    <div>
+        @Html.Label("user", "Tài khoản:")
+        @Html.TextBox("user")
+    </div>
+
+    <div>
+        @Html.Label("password", "Mật khẩu:")
+        @Html.Password("password")
+    </div>
+
+    if (ViewBag.ShowCaptcha != null && (bool)ViewBag.ShowCaptcha)
+    {
+        <div>
+            @Html.Label("captcha", "Mã Captcha:")
+            <img src="@Url.Action("TaoCaptCha", "Captcha")" alt="Captcha" />
+            @Html.TextBox("captcha")
+        </div>
+    }
+
+    <div>
+        @Html.CheckBox("rememberMe", new { id = "rememberMe" })
+        @Html.Label("rememberMe", "Nhớ mật khẩu")
+    </div>
+
+    <button type="submit">Đăng Nhập</button>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.error))
+{
+    <p>@ViewBag.error</p>
+}

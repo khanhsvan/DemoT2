@@ -1,0 +1,30 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model DemoT2.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Xóa tài khoản";
+}
+
+<h2>Xóa tài khoản</h2>
+
+<h3>Bạn có chắc chắn muốn xóa tài khoản này?</h3>
+<div>
+    <h4>Tài khoản</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.taikhoan)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.taikhoan)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.hoten)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.hoten)
+        </dd>

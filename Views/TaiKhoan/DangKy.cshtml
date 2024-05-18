@@ -1,0 +1,52 @@
+﻿@model DemoT2.Models.TaiKhoan
+@{
+    ViewBag.Title = "Đăng Ký";
+}
+
+<h2>Đăng Ký</h2>
+
+@using (Html.BeginForm("DangKy", "TaiKhoan", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m => m.taikhoan)
+        @Html.TextBoxFor(m => m.taikhoan)
+        @Html.ValidationMessageFor(m => m.taikhoan)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.matkhau)
+        @Html.PasswordFor(m => m.matkhau)
+        @Html.ValidationMessageFor(m => m.matkhau)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.hoten)
+        @Html.TextBoxFor(m => m.hoten)
+        @Html.ValidationMessageFor(m => m.hoten)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.sodienthoai)
+        @Html.TextBoxFor(m => m.sodienthoai)
+        @Html.ValidationMessageFor(m => m.sodienthoai)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.ngaysinh)
+        @Html.TextBoxFor(m => m.ngaysinh, "{0:dd/MM/yyyy}")
+        @Html.ValidationMessageFor(m => m.ngaysinh)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.email)
+        @Html.TextBoxFor(m => m.email)
+        @Html.ValidationMessageFor(m => m.email)
+    </div>
+
+    <button type="submit">Đăng Ký</button>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <p>@ViewBag.SuccessMessage</p>
+}
