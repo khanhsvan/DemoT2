@@ -22,3 +22,19 @@ select,
 textarea {
     max-width: 280px;
 }
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px;
+    background-color: #f8f9fa; /* Màu nền của sidebar */
+    border-right: 1px solid #ddd; /* Đường viền phân chia giữa sidebar và nội dung chính */
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
+}
+
+/* Điều chỉnh khoảng cách giữa sidebar và nội dung chính */
+.col-md-9 {
+    margin-left: 250px; /* Điều chỉnh giá trị này tùy thuộc vào kích thước của sidebar */
+}

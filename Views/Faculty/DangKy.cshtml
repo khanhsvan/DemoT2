@@ -1,0 +1,86 @@
+﻿@model List<DemoT2.Models.DangKy>
+
+@{
+    ViewBag.Title = "Đăng Ký môn học";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Đường dẫn đến layout chung của trang
+
+    List<string> permissions = new List<string>();
+    if (ViewBag.RolePermissionsForTables.ContainsKey("DangKy"))
+    {
+        permissions = ViewBag.RolePermissionsForTables["DangKy"] as List<string>;
+    }
+}
+
+<h2>Danh sách Môn học đã được đăng ký</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Đăng ký</th>
+                <th>Mã Sinh viên</th>
+                <th>Mã môn học</th>
+                <th>Ngày đăng ký</th>
+
+                @if (permissions.Any(p => p.Equals("INSERT", StringComparison.OrdinalIgnoreCase)))
+                {
+                    <th>Thêm</th>
+                }
+                @if (permissions.Any(p => p.Equals("SELECT", StringComparison.OrdinalIgnoreCase)))
+                {
+                    <th>Xem</th>
+                }
+                @if (permissions.Any(p => p.Equals("UPDATE", StringComparison.OrdinalIgnoreCase)))
+                {
+                    <th>Sửa</th>
+                }
+                @if (permissions.Any(p => p.Equals("DELETE", StringComparison.OrdinalIgnoreCase)))
+                {
+                    <th>Xóa</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dangKy in Model)
+            {
+                <tr>
+                    <td>@dangKy.MaDangKy</td>
+                    <td>@dangKy.MaSinhVien</td>
+                    <td>@dangKy.MaMonHoc</td>
+                    <td>@dangKy.NgayDangKy.ToString("dd/MM/yyyy")</td>
+
+                    @if (permissions.Any(p => p.Equals("INSERT", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <td>
+                            @Html.ActionLink("Đăng ký mới", "InsertDangKy", "Faculty", new { id = dangKy.MaDangKy })
+                        </td>
+                    }
+                    @if (permissions.Any(p => p.Equals("SELECT", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <td>
+                            @Html.ActionLink("Xem", "SelectDangKy", "Faculty", new { id = dangKy.MaDangKy })
+                        </td>
+                    }
+                    @if (permissions.Any(p => p.Equals("UPDATE", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <td>
+                            @Html.ActionLink("Sửa", "UpdateDangKy", "Faculty", new { id = dangKy.MaDangKy })
+                        </td>
+                    }
+                    @if (permissions.Any(p => p.Equals("DELETE", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <td>
+                            @Html.ActionLink("Xóa", "DeleteDangKy", "Faculty", new { id = dangKy.MaDangKy })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p> @Html.ActionLink("Trở lại", "TrangChucNang", "TaiKhoan")</p>
+}
+else
+{
+    <p>Không có dữ liệu để hiển thị.</p>
+}

@@ -1,0 +1,70 @@
+﻿@model List<DemoT2.Models.MonHoc>
+
+@{
+    ViewBag.Title = "SinhVien";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Đường dẫn đến layout chung của trang
+
+}
+
+<h2>Danh sách Môn học</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã môn học</th>
+                <th>Tên môn học</th>
+                <th>Số tín chỉ</th>
+                <th>Khoa</th>
+
+                @if (ViewBag.RolePermissionsForTables["MonHoc"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][1]) // Kiểm tra quyền "Insert"
+                {
+                    <th></th>
+                }
+                @if (ViewBag.RolePermissionsForTables["MonHoc"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][2]) // Kiểm tra quyền "Insert"
+                {
+                    <th></th>
+                }
+                @if (ViewBag.RolePermissionsForTables["MonHoc"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][3]) // Kiểm tra quyền "Insert"
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var monHoc in Model)
+            {
+                <tr>
+                    <td>@monHoc.MaMonHoc</td>
+                    <td>@monHoc.TenMonHoc</td>
+                    <td>@monHoc.SoTinChi</td>
+                    <td>@monHoc.Khoa</td>
+                    @if (ViewBag.RolePermissionsForTables["MonHoc"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][1]) // Kiểm tra quyền "Insert"
+                    {
+                        <td>
+                            @Html.ActionLink("Thêm", "ThemSinhVien", new { id = monHoc.MaMonHoc })
+                        </td>
+                    }
+                    @if (ViewBag.RolePermissionsForTables["MonHoc"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][2]) // Kiểm tra quyền "Insert"
+                    {
+                        <td>
+                            @Html.ActionLink("Sửa", "MonHoc", new { id = monHoc.MaMonHoc })
+                        </td>
+                    }
+                    @if (ViewBag.RolePermissionsForTables["SinhVien"].Count > 1 && ViewBag.RolePermissionsForTables["GiaoVien"][3]) // Kiểm tra quyền "Insert"
+                    {
+                        <td>
+                            @Html.ActionLink("Xóa", "MonHoc", new { id = monHoc.MaMonHoc })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p> @Html.ActionLink("Trở lại", "TrangChucNang", "TaiKhoan")</p>
+}
+else
+{
+    <p>Không có dữ liệu sinh viên để hiển thị.</p>
+}

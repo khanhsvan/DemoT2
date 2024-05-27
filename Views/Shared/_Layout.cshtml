@@ -1,4 +1,5 @@
-﻿
+﻿@using DemoT2.Models
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +8,27 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Thêm Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* Custom CSS */
+        body {
+            padding-top: 70px; /* Để làm cho navbar không chạm vào nội dung */
+            padding-bottom: 20px;
+        }
+
+        .body-content {
+            padding: 20px; /* Thêm padding tổng thể cho nội dung */
+        }
+
+        .sidebar {
+            background-color: #f8f9fa; /* Màu nền của sidebar */
+            border-right: 1px solid #ddd; /* Đường viền phân chia giữa sidebar và nội dung chính */
+            overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
+            padding: 20px; /* Thêm padding cho sidebar */
+        }
+    </style>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -17,22 +39,50 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("DemoPQ", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-
-                    @if (Request.Cookies["UserLogin"] != null)
+                    @if (Request.Cookies["Userdata"] != null || Session["LoggedInUserInfo"] != null)
                     {
-                        var username = Request.Cookies["UserLogin"]["Username"];
-                        var fullname = "User"; // Bạn có thể thay đổi để lấy tên đầy đủ từ cơ sở dữ liệu nếu cần thiết
+                        var username = "";
+                        if (Request.Cookies["Userdata"] != null)
+                        {
+                            username = Request.Cookies["Userdata"]["Username"];
+                        }
+                        else if (Session["LoggedInUserInfo"] != null)
+                        {
+                            var loggedInUserInfo = (UserSessionInfo)Session["LoggedInUserInfo"];
+                            username = loggedInUserInfo.UserName;
+                        }
 
+                        var fullname = "User"; // Bạn có thể thay đổi để lấy tên đầy đủ từ cơ sở dữ liệu nếu cần thiết
+                        if (ViewBag.RoleNames != null && ViewBag.RoleNames.Contains("Admin"))
+                        {
+                            foreach (var table in ViewBag.Tables)
+                            {
+                                <li><a href="@Url.Action(table, "Admin")" class="btn btn-link">@table</a></li>
+                            }
+                        }
+                        if (ViewBag.RoleNames != null && ViewBag.RoleNames.Contains("Faculty"))
+                        {
+                            foreach (var table in ViewBag.Tables)
+                            {
+                                <li><a href="@Url.Action(table, "Faculty")" class="btn btn-link">@table</a></li>
+                            }
+                        }
+                        if (ViewBag.RoleNames != null && ViewBag.RoleNames.Contains("Student"))
+                        {
+                            foreach (var table in ViewBag.Tables)
+                            {
+                                <li><a href="@Url.Action(table, "Student")" class="btn btn-link">@table</a></li>
+                            }
+                        }
                         <li><a>Xin chào, @username</a></li>
                         <li>@Html.ActionLink("Đăng xuất", "Logout", "TaiKhoan")</li>
                     }
+
                     else
                     {
                         <li>@Html.ActionLink("Đăng nhập", "DangNhap", "TaiKhoan")</li>
@@ -43,16 +93,54 @@
 
         </div>
     </div>
+
     <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        <div class="row">
+            <!-- Main content -->
+            <div class="col-md-9">
+                @RenderBody()
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
+    <!-- Scripts -->
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<script>
+    // Đặt thời gian timeout (miligiây)
+    var timeout = 60000; // Ví dụ: 1 phút
+
+    // Biến đánh dấu thời gian cuối cùng mà người dùng hoạt động
+    var lastActivityTime = new Date().getTime();
+
+    // Hàm cập nhật thời gian hết hạn của cookie
+    function updateCookieExpiration() {
+        var now = new Date().getTime();
+        var timeSinceLastActivity = now - lastActivityTime;
+        if (timeSinceLastActivity > timeout) {
+            // Nếu thời gian kể từ hoạt động cuối cùng của người dùng vượt quá timeout
+            // Hãy cập nhật lại thời gian hết hạn của cookie
+            var expirationDate = new Date(now + 86400000); // Thêm 1 ngày (86400000 miligiây)
+            document.cookie = "Userdata=; expires=" + expirationDate.toUTCString() + "; path=/"; // Đặt lại cookie
+        }
+    }
+
+    // Cập nhật thời gian cuối cùng mà người dùng hoạt động khi có sự kiện hoạt động trên trang
+    document.addEventListener("mousemove", function () {
+        lastActivityTime = new Date().getTime();
+        updateCookieExpiration();
+    });
+
+    document.addEventListener("keypress", function () {
+        lastActivityTime = new Date().getTime();
+        updateCookieExpiration();
+    });
+
+</script>

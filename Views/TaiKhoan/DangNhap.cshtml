@@ -1,39 +1,44 @@
 ﻿@{
-    ViewBag.Title = "Đăng Nhập";
+    ViewBag.Title = "Đăng nhập";
 }
 
-<h2>Đăng Nhập</h2>
+<h2>Đăng nhập</h2>
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger">@ViewBag.error</div>
+}
 
 @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
 {
-    <div>
-        @Html.Label("user", "Tài khoản:")
-        @Html.TextBox("user")
+    <div class="form-group">
+        <label>Tài Khoản:</label>
+        @Html.TextBox("user", null, new { @class = "form-control", placeholder = "Tài khoản" })
+    </div>
+    <div class="form-group">
+        <label>Mật Khẩu</label>
+        @Html.Password("password", null, new { @class = "form-control", placeholder = "Mật khẩu" })
     </div>
 
-    <div>
-        @Html.Label("password", "Mật khẩu:")
-        @Html.Password("password")
-    </div>
-
-    if (ViewBag.ShowCaptcha != null && (bool)ViewBag.ShowCaptcha)
+    if (ViewBag.ShowCaptcha == true)
     {
-        <div>
-            @Html.Label("captcha", "Mã Captcha:")
-            <img src="@Url.Action("TaoCaptCha", "Captcha")" alt="Captcha" />
-            @Html.TextBox("captcha")
+        <div class="form-group">
+            <label for="captcha">Captcha:</label>
+            <input type="text" id="captcha" name="captcha" class="form-control" placeholder="Nhập mã Captcha" />
+            @if (ViewBag.CaptchaError != null)
+            {
+                <div class="alert alert-danger">@ViewBag.CaptchaError</div>
+            }
         </div>
     }
 
-    <div>
-        @Html.CheckBox("rememberMe", new { id = "rememberMe" })
-        @Html.Label("rememberMe", "Nhớ mật khẩu")
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="rememberMe" /> Nhớ tôi
+            </label>
+        </div>
     </div>
 
-    <button type="submit">Đăng Nhập</button>
-}
-
-@if (!string.IsNullOrEmpty(ViewBag.error))
-{
-    <p>@ViewBag.error</p>
+    <button type="submit" class="btn btn-primary">Đăng nhập</button>
 }

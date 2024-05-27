@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Trang Chức Năng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Đường dẫn đến layout chung của trang
+}
+
+<h2 class="text-center">Chào mừng đến Trang Chức Năng</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Vai trò người dùng</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        @foreach (var role in ViewBag.RoleNames)
+                        {
+                            if (role == "Admin")
+                            {
+                                <li class="list-group-item">
+                                    <button class="btn btn-success enable-function" data-action="@Url.Action("EnableDiemFunction", "Admin")">Bật chức năng nhập điểm</button>
+                                </li>
+                                <li class="list-group-item">
+                                    <button class="btn btn-danger disable-function" data-action="@Url.Action("DisableDiemFunction", "Admin")">Tắt chức năng nhập điểm</button>
+                                </li>
+                                <li class="list-group-item">
+                                    <button class="btn btn-success enable-function" data-action="@Url.Action("EnableDangKyFunction", "Admin")">Bật chức năng đăng ký môn học</button>
+                                </li>
+                                <li class="list-group-item">
+                                    <button class="btn btn-danger disable-function" data-action="@Url.Action("DisableDangKyFunction", "Admin")">Tắt chức năng đăng ký môn học</button>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="list-group-item">@role</li>
+
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Họ tên người dùng</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p class="alert alert-info">@Session["hoTen"]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Các quyền được cấp cho từng bảng</h3>
+                </div>
+                <div class="panel-body">
+                    @if (ViewBag.RolePermissionsForTable != null && ViewBag.RolePermissionsForTable.Count > 0)
+                    {
+                        <ul class="list-group" id="permissionsList">
+                            @foreach (var kvp in ViewBag.RolePermissionsForTable)
+                            {
+                                <li class="list-group-item">
+                                    <strong>Bảng:</strong> <span data-table="@kvp.Key">@kvp.Key</span>
+                                    <ul>
+                                        @foreach (var permission in kvp.Value)
+                                        {
+                                            <li>@permission</li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Không có dữ liệu về quyền của bất kỳ bảng nào.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Chuỗi kết nối từ session</h3>
+                </div>
+                <div class="panel-body">
+                    <p class="alert alert-info">@Session["ConnectionString"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm script để chuyển đổi tên bảng -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Từ điển ánh xạ tên bảng từ tiếng Anh sang tiếng Việt
+        const tableNameMap = {
+            "SinhViens": "Sinh Viên",
+            "MonHocs": "Môn Học",
+            "GiaoViens": "Giáo Viên",
+            "DangKies": "Đăng Ký",
+            "Diems": "Điểm"
+        };
+
+        // Hàm để chuyển đổi tên bảng
+        function translateTableNames(selector) {
+            document.querySelectorAll(selector).forEach(function (element) {
+                const tableName = element.getAttribute('data-table');
+                if (tableNameMap[tableName]) {
+                    element.innerText = tableNameMap[tableName];
+                }
+            });
+        }
+
+        // Chuyển đổi tên bảng trong danh sách chức năng
+        translateTableNames('#tableList li[data-table] a');
+        translateTableNames('#tableList li[data-table]');
+
+        // Chuyển đổi tên bảng trong danh sách quyền
+        translateTableNames('#permissionsList li span[data-table]');
+    });
+</script>
+<!-- Script để xử lý AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.enable-function, .disable-function').click(function () {
+            var actionUrl = $(this).data('action');
+            var button = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                success: function (response) {
+                    alert(response.message); // Hiển thị thông báo từ server
+                },
+                error: function (xhr, status, error) {
+                    alert("Có lỗi xảy ra: " + error);
+                }
+            });
+        });
+    });
+</script>

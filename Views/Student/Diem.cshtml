@@ -1,0 +1,39 @@
+﻿@model List <DemoT2.Models.SvDiem>
+
+@{
+    ViewBag.Title = "Danh sách điểm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Danh sách điểm</h2>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên môn học</th>
+                <th>Điểm số</th>
+                <th>Ngày nhập điểm</th>
+                <th>Số tín chỉ</th>
+                <th>Tên giáo viên giảng dạy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@item.TenMonHoc</td>
+                <td>@item.DiemSo</td>
+                <td>@item.NgayNhapDiem.ToString("dd/MM/yyyy")</td>
+                <td>@item.SoTinChi</td>
+                <td>@item.TenGiaoVien</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không có dữ liệu để hiển thị.</p>
+}
